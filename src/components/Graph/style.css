@@ -1,0 +1,4 @@
+#cy {
+    width: calc(100vw - 2px);
+    height: 60vh;
+}
