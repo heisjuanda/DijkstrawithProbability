@@ -28,7 +28,7 @@ export const Home = () => {
       setResult(`There's no way to get there`);
       return;
     }
-    setResult(`Distance ${result.distance} y Probability ${result.probability}`);
+    setResult(`Distance ${calculatedValue.distance} y Probability ${calculatedValue.probability}`);
   };
 
   return (
