@@ -12,8 +12,8 @@ function generateRandomGraph(maxNodes) {
 
     for (let j = 0; j < numEdges; j++) {
       const randomNode = NODES[Math.floor(Math.random() * maxNodes)];
-      const weight = Math.floor(Math.random() * 10) + 1;
-      const probability = 0.1 + Math.random() * (1 - 0.1)
+      const weight = 1;
+      const probability = 1
 
       graph[node].push([randomNode, weight, probability.toFixed(1)]);
     }

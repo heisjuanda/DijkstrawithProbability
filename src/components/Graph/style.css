@@ -1,4 +1,6 @@
 #cy {
     width: calc(100vw - 2px);
-    height: 60vh;
+    height: 55vh;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.301);
 }

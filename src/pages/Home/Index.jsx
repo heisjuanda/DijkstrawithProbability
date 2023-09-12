@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Graph } from "../../components/Graph";
 
 import NODES from "../../constants";
-import dijkstraWithProbability from "../../utils/probability";
+import dijkstra from "../../utils/probabilityDijkstra";
+import probabilisticShortestPath from "../../utils/probabilistic";
 import generateRandomGraph from "../../utils/graph";
 
 import "./style.css";
@@ -22,13 +23,31 @@ export const Home = () => {
     const startNode = "A";
     const lastNode = Object.entries(graph);
     const endNode = lastNode[lastNode.length - 1][0];
+
     setResult({});
-    const calculatedValue = dijkstraWithProbability(graph, startNode, endNode);
-    if (calculatedValue.distance === -1) {
-      setResult(`There's no way to get there`);
+    const calculatedDijkstraValue = dijkstra(graph, startNode, endNode);
+    const calculatedProbabilisticValue = probabilisticShortestPath(
+      graph,
+      startNode,
+      endNode,
+      100
+    );
+    if (calculatedDijkstraValue.cost === -1) {
+      setResult(() => ({
+        dijkstra: {
+          result: "I cannot calculate it",
+        },
+      }));
       return;
     }
-    setResult(`Distance ${calculatedValue.distance} y Probability ${calculatedValue.probability}`);
+    setResult(() => ({
+      dijkstra: {
+        result: `Best path: ${calculatedDijkstraValue.path.toString()} and its cost ${calculatedDijkstraValue.cost}`,
+      },
+      probabilistic: {
+        result: `Best path: ${calculatedProbabilisticValue.path} and its cost ${calculatedProbabilisticValue.cost}`,
+      },
+    }));
   };
 
   return (
@@ -44,13 +63,22 @@ export const Home = () => {
       {graph && (
         <article>
           <button onClick={handleCalculate}>calculate</button>
-          {result ? (
-            <p>
-              {result}
-            </p>
-          ) : (
-            <p></p>
-          )}
+          {result?.dijkstra ? (
+            <div className="results">
+              {result?.dijkstra && (
+                <div>
+                  <h6>Dijkstra</h6>
+                  <p>{result.dijkstra?.result}</p>
+                </div>
+              )}
+              {result?.probabilistic && (
+                <div>
+                  <h6>Probabilistic</h6>
+                  <p>{result.probabilistic?.result}</p>
+                </div>
+              )}
+            </div>
+          ) : null}
         </article>
       )}
     </section>

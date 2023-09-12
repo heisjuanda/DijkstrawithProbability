@@ -1,14 +1,13 @@
 import PriorityQueue from "./queue";
 
-function dijkstraWithProbability(graph, startNode, endNode) {
+function dijkstra(graph, startNode, endNode) {
   const distances = {};
-  const probabilities = {};
+  const previousNodes = {};
   const visited = {};
   const queue = new PriorityQueue();
 
   for (const node in graph) {
     distances[node] = Infinity;
-    probabilities[node] = 1;
   }
 
   distances[startNode] = 0;
@@ -18,27 +17,40 @@ function dijkstraWithProbability(graph, startNode, endNode) {
     const { node } = queue.dequeue();
 
     if (node === endNode) {
-      return { distance: distances[node], probability: probabilities[node] };
+      return {
+        path: constructPath(previousNodes, endNode),
+        cost: distances[endNode],
+      };
     }
 
     if (!visited[node]) {
       visited[node] = true;
 
       for (const neighbor of graph[node]) {
-        const [nextNode, weight, prob] = neighbor;
+        const [nextNode, weight] = neighbor;
         const distanceToNeighbor = distances[node] + weight;
-        const newProbability = probabilities[node] * prob;
 
         if (distanceToNeighbor < distances[nextNode]) {
           distances[nextNode] = distanceToNeighbor;
-          probabilities[nextNode] = newProbability;
+          previousNodes[nextNode] = node;
           queue.enqueue(nextNode, distanceToNeighbor);
         }
       }
     }
   }
 
-  return { distance: -1, probability: 0 };
+  return { path: [], cost: -1 };
 }
 
-export default dijkstraWithProbability;
+function constructPath(previousNodes, endNode) {
+  const path = [];
+  let currentNode = endNode;
+  while (previousNodes[currentNode]) {
+    path.unshift(currentNode);
+    currentNode = previousNodes[currentNode];
+  }
+  path.unshift(currentNode);
+  return path;
+}
+
+export default dijkstra;
